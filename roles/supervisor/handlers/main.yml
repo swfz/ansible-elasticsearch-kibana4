@@ -1,0 +1,3 @@
+- name: reload supervisor
+  # supervisorctl: name={{ supervisor_program }} state=restarted username={{ supervisor_user }}
+  command: supervisorctl reload

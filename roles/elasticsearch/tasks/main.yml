@@ -1,0 +1,49 @@
+- name: openjdk
+  yum: name={{ openjdk }} state=installed
+
+- name: elasticsearch
+  yum: name={{ rpm }} state=present
+
+- name: check exist plugin
+  stat: path=/usr/share/elasticsearch/plugins/head
+  register: plugin_head
+
+- name: plugin elasticsearch-head install
+  when: plugin_head.stat.exists == false
+  command: /usr/share/elasticsearch/bin/plugin --install mobz/elasticsearch-head
+
+- name: set cluster config
+  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
+  with_items:
+    - regexp: "#cluster.name"
+      replace: "cluster.name"
+    - regexp: "#network.host: 192.168.0.1"
+      replace: "network.host: '_eth1:ipv4_'"
+
+- name: set node config master
+  when: elasticsearch_node_type == 'master'
+  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
+  with_items:
+    - regexp: "#cluster.name: elasticsearch"
+      replace: "cluster.name: elasticsearch-master"
+    - regexp: "#node.master: true"
+      replace: "node.master: true"
+    - regexp: "#node.data: false"
+      replace: "node.data: false"
+  notify: restart elasticsearch
+
+- name: set node config data
+  when: elasticsearch_node_type == 'data'
+  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
+  with_items:
+    - regexp: "#cluster.name: elasticsearch"
+      replace: "cluster.name: elasticsearch-data"
+    - regexp: "#node.master: false"
+      replace: "node.master: false"
+    - regexp: "#node.data: true"
+      replace: "node.data: true"
+  notify: restart elasticsearch
+
+- name: start elasticsearch
+  service: name=elasticsearch state=running enabled=yes
+

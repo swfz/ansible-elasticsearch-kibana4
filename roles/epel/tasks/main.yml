@@ -1,0 +1,8 @@
+- name: install yum-priorities
+  yum: name=yum-priorities state=installed
+- name: be sure epel repository is installed
+  yum: name=http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm
+- name: disable epel repository
+  ini_file: dest=/etc/yum.repos.d/epel.repo section="epel" option="enabled" value="0"
+- name: replace epel.repo https to http
+  replace: dest=/etc/yum.repos.d/epel.repo regexp='mirrorlist = https' replace='mirrorlist = http' backup=yes

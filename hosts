@@ -1,0 +1,8 @@
+[elasticsearch_master]
+192.168.20.18
+[elasticsearch_data]
+192.168.20.19
+192.168.20.20
+192.168.20.21
+[kibana]
+192.168.20.18

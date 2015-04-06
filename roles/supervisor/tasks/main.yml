@@ -1,0 +1,17 @@
+- name: install
+  yum: name=supervisor state=installed enablerepo=epel
+
+- name: check exist config
+  stat: path=/etc/supervisord.conf
+  register: file
+
+- name: echo config file
+  when: file.stat.md5 is not defined
+  shell: "echo_supervisord_conf > /etc/supervisord.conf"
+
+- name: set init file
+  template: src=init.j2 dest=/etc/init/supervisord.conf owner=root mode=0755
+
+- name: run
+  service: name=supervisord state=running
+
