@@ -12,6 +12,8 @@
   when: plugin_head.stat.exists == false
   command: /usr/share/elasticsearch/bin/plugin --install mobz/elasticsearch-head
 
+# cluster.name: default "elasticsearch"
+# network.host: setting required by vagrant
 - name: set cluster config
   replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
   with_items:
