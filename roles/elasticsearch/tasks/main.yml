@@ -12,13 +12,12 @@
   when: plugin_head.stat.exists == false
   command: /usr/share/elasticsearch/bin/plugin --install mobz/elasticsearch-head
 
-# cluster.name: default "elasticsearch"
 # network.host: setting required by vagrant
 - name: set cluster config
   replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
   with_items:
-    - regexp: "#cluster.name"
-      replace: "cluster.name"
+    - regexp: "#cluster.name: elasticsearch"
+      replace: "cluster.name: elasticsearch"
     - regexp: "#network.host: 192.168.0.1"
       replace: "network.host: '_eth1:ipv4_'"
 
@@ -26,8 +25,6 @@
   when: elasticsearch_node_type == 'master'
   replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
   with_items:
-    - regexp: "#cluster.name: elasticsearch"
-      replace: "cluster.name: elasticsearch-master"
     - regexp: "#node.master: true"
       replace: "node.master: true"
     - regexp: "#node.data: false"
@@ -38,8 +35,6 @@
   when: elasticsearch_node_type == 'data'
   replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
   with_items:
-    - regexp: "#cluster.name: elasticsearch"
-      replace: "cluster.name: elasticsearch-data"
     - regexp: "#node.master: false"
       replace: "node.master: false"
     - regexp: "#node.data: true"

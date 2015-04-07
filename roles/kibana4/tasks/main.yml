@@ -12,7 +12,6 @@
 
 - name: set kibana config
   replace: dest={{ src }}/{{ version }}/config/kibana.yml regexp='http://.*:9200' replace="http://{{ kibana_elasticsearch_ip }}:9200" backup=yes
-  register: config_replace
   notify: reload supervisor
 
 - name: set supervisor config
