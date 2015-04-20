@@ -21,6 +21,16 @@
     - regexp: "#network.host: 192.168.0.1"
       replace: "network.host: '_eth1:ipv4_'"
 
+- name: set node config multi
+  when: elasticsearch_node_type == 'multi'
+  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
+  with_items:
+    - regexp: "#node.master: true"
+      replace: "node.master: true"
+    - regexp: "#node.data: true"
+      replace: "node.data: true"
+  notify: restart elasticsearch
+
 - name: set node config master
   when: elasticsearch_node_type == 'master'
   replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes

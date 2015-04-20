@@ -4,3 +4,8 @@
 * kibana4
     * supervisor
 
+* run
+```
+ansible-playbook -i hosts site.yml
+```
+
