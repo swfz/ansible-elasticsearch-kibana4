@@ -1,3 +1,10 @@
-rpm: https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.4.noarch.rpm
+rpm: https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.5.1.noarch.rpm
 openjdk: java-1.8.0
 configfile: /etc/elasticsearch/elasticsearch.yml
+elasticsearch_plugins:
+  head:
+    repo: mobz/elasticsearch-head
+  inquisitor:
+    repo: polyfractal/elasticsearch-inquisitor
+  HQ:
+    repo: royrusso/elasticsearch-HQ

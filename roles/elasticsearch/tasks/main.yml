@@ -4,13 +4,18 @@
 - name: elasticsearch
   yum: name={{ rpm }} state=present
 
-- name: check exist plugin
-  stat: path=/usr/share/elasticsearch/plugins/head
-  register: plugin_head
+- name: check exist plugins
+  stat: path=/usr/share/elasticsearch/plugins/{{ item.key }}
+  with_dict: elasticsearch_plugins
+  register: exist_plugins
+  tags: test
 
-- name: plugin elasticsearch-head install
-  when: plugin_head.stat.exists == false
-  command: /usr/share/elasticsearch/bin/plugin --install mobz/elasticsearch-head
+- name: "elasticsearch plugin install"
+  when: item.1.stat.exists == false
+  command: /usr/share/elasticsearch/bin/plugin --install {{ elasticsearch_plugins[item.0].repo }}
+  with_together:
+    - elasticsearch_plugins
+    - exist_plugins.results
 
 # network.host: setting required by vagrant
 - name: set cluster config
