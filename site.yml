@@ -11,4 +11,5 @@
   sudo: yes
   roles:
     - { role: kibana4, kibana_elasticsearch_ip: "{{  groups.elasticsearch_master.0  }}" }
+    - { role: nginx, nginx_config: ./roles/kibana4/templates/nginx.j2 }
 

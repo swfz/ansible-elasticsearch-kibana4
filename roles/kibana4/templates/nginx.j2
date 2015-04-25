@@ -1,0 +1,64 @@
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+    set_real_ip_from   10.0.0.0/8;
+    real_ip_header     X-Forwarded-For;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$request_time" "$http_x_forwarded_for" "$http_cookie"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    include /etc/nginx/conf.d/*.conf;
+
+    proxy_set_header        Host            $host;
+    proxy_set_header        X-Real-IP       $remote_addr;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    client_max_body_size    10m;
+    client_body_buffer_size 128k;
+    proxy_connect_timeout   90;
+    proxy_send_timeout      90;
+    proxy_read_timeout      90;
+    proxy_buffers           32 4k;
+
+    upstream backend_cluster {
+        least_conn;
+        server 127.0.0.1:5601;
+    }
+    server {
+        listen       80 default_server;
+        server_name  sampleapp.com;
+
+        # As a temporary workaround to security hole. (http://mailman.nginx.org/pipermail/nginx-announce/2013/000125.html)
+        if ($request_uri ~ " ") {
+            return 444;
+        }
+
+        proxy_set_header X-Forwarded-Port 80;
+
+        location / {
+            proxy_pass http://backend_cluster/;
+
+            proxy_set_header X-Forwarded-Host $host;
+
+            proxy_redirect http://$host:5601/  /;
+            proxy_redirect https://$host:5601/ https://$host/;
+        }
+    }
+}
