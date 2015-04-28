@@ -8,7 +8,6 @@
   stat: path=/usr/share/elasticsearch/plugins/{{ item.key }}
   with_dict: elasticsearch_plugins
   register: exist_plugins
-  tags: test
 
 - name: "elasticsearch plugin install"
   when: item.1.stat.exists == false
@@ -54,6 +53,19 @@
       replace: "node.master: false"
     - regexp: "#node.data: true"
       replace: "node.data: true"
+  notify: restart elasticsearch
+
+- name: exist jsonp settings
+  shell: grep {{ item }} {{ configfile }} | wc -l
+  with_items: elasticsearch_jsonp_setting
+  register: exist_jsonp
+
+- name: exist jsonp settings
+  when: item.1.stdout == "0"
+  shell: echo {{ item.0 }} >> {{ configfile }}
+  with_together:
+    - elasticsearch_jsonp_setting
+    - exist_jsonp.results
   notify: restart elasticsearch
 
 - name: start elasticsearch

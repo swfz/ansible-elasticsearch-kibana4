@@ -8,3 +8,11 @@ elasticsearch_plugins:
     repo: polyfractal/elasticsearch-inquisitor
   HQ:
     repo: royrusso/elasticsearch-HQ
+
+elasticsearch_jsonp_setting:
+  - 'http.jsonp.enable: true'
+  - 'http.cors.enabled: true'
+  - 'http.cors.allow-origin: "*"'
+  - 'http.cors.allow-methods: GET,POST'
+  - 'http.cors.allow-headers: true'
+  - 'http.cors.allow-credentials: true'
