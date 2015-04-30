@@ -8,6 +8,8 @@ elasticsearch_plugins:
     repo: polyfractal/elasticsearch-inquisitor
   HQ:
     repo: royrusso/elasticsearch-HQ
+  bigdesk:
+    repo: lukas-vlcek/bigdesk
 
 elasticsearch_jsonp_setting:
   - 'http.jsonp.enable: true'
