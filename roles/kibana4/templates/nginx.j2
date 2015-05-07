@@ -39,8 +39,12 @@ http {
 
     upstream backend_cluster {
         least_conn;
-        server {{ groups.elasticsearch_master.0 }}:5601;
+        server {{ groups.kibana.0 }}:5601;
     }
+    upstream es_cluster {
+        server {{ groups.elasticsearch_master.0 }}:9200;
+    }
+
     server {
         listen       80 default_server;
         server_name  sampleapp.com;
@@ -51,6 +55,19 @@ http {
         }
 
         proxy_set_header X-Forwarded-Port 80;
+
+        location /es {
+            rewrite ^/es/(.+) /$1 break;
+            rewrite ^/es      / break;
+
+            proxy_pass http://es_cluster/;
+
+            proxy_set_header Host $host/es;
+            proxy_set_header X-Forwarded-Host $host;
+
+            proxy_redirect http://$host:9200/  /;
+            proxy_redirect https://$host:9200/ https://$host/;
+        }
 
         location / {
             proxy_pass http://backend_cluster/;
