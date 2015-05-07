@@ -39,7 +39,7 @@ http {
 
     upstream backend_cluster {
         least_conn;
-        server 127.0.0.1:5601;
+        server {{ groups.elasticsearch_master.0 }}:5601;
     }
     server {
         listen       80 default_server;

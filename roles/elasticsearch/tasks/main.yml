@@ -16,56 +16,8 @@
     - elasticsearch_plugins
     - exist_plugins.results
 
-# network.host: setting required by vagrant
-- name: set cluster config
-  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
-  with_items:
-    - regexp: "#cluster.name: elasticsearch"
-      replace: "cluster.name: elasticsearch"
-    - regexp: "#network.host: 192.168.0.1"
-      replace: "network.host: '_eth1:ipv4_'"
-
-- name: set node config multi
-  when: elasticsearch_node_type == 'multi'
-  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
-  with_items:
-    - regexp: "#node.master: true"
-      replace: "node.master: true"
-    - regexp: "#node.data: true"
-      replace: "node.data: true"
-  notify: restart elasticsearch
-
-- name: set node config master
-  when: elasticsearch_node_type == 'master'
-  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
-  with_items:
-    - regexp: "#node.master: true"
-      replace: "node.master: true"
-    - regexp: "#node.data: false"
-      replace: "node.data: false"
-  notify: restart elasticsearch
-
-- name: set node config data
-  when: elasticsearch_node_type == 'data'
-  replace: dest={{ configfile }} regexp='{{ item.regexp }}' replace='{{ item.replace }}' backup=yes
-  with_items:
-    - regexp: "#node.master: false"
-      replace: "node.master: false"
-    - regexp: "#node.data: true"
-      replace: "node.data: true"
-  notify: restart elasticsearch
-
-- name: exist jsonp settings
-  shell: grep {{ item }} {{ configfile }} | wc -l
-  with_items: elasticsearch_jsonp_setting
-  register: exist_jsonp
-
-- name: exist jsonp settings
-  when: item.1.stdout == "0"
-  shell: echo {{ item.0 }} >> {{ configfile }}
-  with_together:
-    - elasticsearch_jsonp_setting
-    - exist_jsonp.results
+- name: "elasticsearch config set"
+  template: src={{ elasticsearch_node_type }}.j2 dest=/etc/elasticsearch/elasticsearch.yml  owner=root mode=755
   notify: restart elasticsearch
 
 - name: start elasticsearch
