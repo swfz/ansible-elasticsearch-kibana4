@@ -2,11 +2,11 @@
 - hosts: elasticsearch_master
   sudo: yes
   roles:
-    - { role: elasticsearch, elasticsearch_node_type: master }
+    - { role: elasticsearch, elasticsearch_node_type: master, elasticsearch_environment: 'ec2' }
 - hosts: elasticsearch_data
   sudo: yes
   roles:
-    - { role: elasticsearch, elasticsearch_node_type: data }
+    - { role: elasticsearch, elasticsearch_node_type: data, elasticsearch_environment: 'ec2' }
 - hosts: kibana
   sudo: yes
   roles:
