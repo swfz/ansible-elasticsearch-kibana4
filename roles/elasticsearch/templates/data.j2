@@ -202,6 +202,8 @@ node.data: true
 #network.bind_host: 192.168.0.1
 {% if elasticsearch_environment == 'vagrant' %}
 network.host: _eth1:ipv4_
+{% elif elasticsearch_environment == 'ec2' %}
+network.host: _ec2:privateIpv4_
 {% else %}
 network.host: 192.168.0.1
 {% endif %}
@@ -294,11 +296,27 @@ network.host: 192.168.0.1
 # 1. Disable multicast discovery (enabled by default):
 #
 #discovery.zen.ping.multicast.enabled: false
+
+{% if elasticsearch_environment == 'ec2' %}
+discovery.zen.ping.multicast.enabled: false
+cloud.aws.region: {{ aws.region }}
+discovery:
+    type: ec2
+    ec2:
+        groups: {{ aws.security_group }}
+        availability_zones: {{ aws.availability_zones }}
+{% endif %}
+
 #
 # 2. Configure an initial list of master nodes in the cluster
 #    to perform discovery when new nodes (master or data) are started:
 #
 #discovery.zen.ping.unicast.hosts: ["host1", "host2:port"]
+
+{% if elasticsearch_environment == 'ec2' %}
+{% set string = groups.elasticsearch_data|join(",") %}
+discovery.zen.ping.unicast.hosts: [{{ string }}, {{groups.elasticsearch_master.0}}]
+{% endif %}
 
 # EC2 discovery allows to use AWS EC2 API in order to perform discovery.
 #

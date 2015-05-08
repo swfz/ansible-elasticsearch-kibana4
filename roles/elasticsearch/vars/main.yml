@@ -10,4 +10,9 @@ elasticsearch_plugins:
     repo: royrusso/elasticsearch-HQ
   bigdesk:
     repo: lukas-vlcek/bigdesk
-
+  cloud-aws:
+    repo: elasticsearch/elasticsearch-cloud-aws/2.5.0
+aws:
+  region: "ap-southeast-1"
+  availability_zones: "ap-southeast-1a,ap-southeast-1b"
+  security_group: "elasticsearch"
