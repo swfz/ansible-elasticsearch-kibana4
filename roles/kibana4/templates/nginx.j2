@@ -37,7 +37,7 @@ http {
     proxy_read_timeout      90;
     proxy_buffers           32 4k;
 
-    upstream backend_cluster {
+    upstream kibana_cluster {
         least_conn;
         server {{ groups.kibana.0 }}:5601;
     }
@@ -70,7 +70,7 @@ http {
         }
 
         location / {
-            proxy_pass http://backend_cluster/;
+            proxy_pass http://kibana_cluster/;
 
             proxy_set_header X-Forwarded-Host $host;
 

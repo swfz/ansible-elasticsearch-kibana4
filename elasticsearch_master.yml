@@ -1,0 +1,17 @@
+---
+- hosts: elasticsearch_master
+  sudo: yes
+  vars_files:
+  - stage_vars/{{ stage }}.yml
+  roles:
+    - { role: elasticsearch, elasticsearch_node_type: master }
+
+  # master node is 1 only
+  tasks:
+    name: set crontab
+    cron: >
+      name="curator delete indeces"
+      minute="0"
+      hour="3"
+      state=present
+      job="curator --host {{ groups.elasticsearch_master.0 }} delete indices --prefix monitor --older-than 60 --time-unit days --timestring %Y-%m-%d"

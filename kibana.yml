@@ -1,0 +1,7 @@
+---
+- hosts: kibana
+  sudo: yes
+  vars_files:
+  - stage_vars/{{ stage }}.yml
+  roles:
+    - { role: kibana4, kibana_elasticsearch_ip: "{{  groups.elasticsearch_master.0  }}" }

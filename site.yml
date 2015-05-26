@@ -1,18 +1,4 @@
----
-- hosts: elasticsearch_master
-  sudo: yes
-  roles:
-    - { role: elasticsearch, elasticsearch_node_type: master, elasticsearch_environment: 'ec2' }
-- hosts: elasticsearch_data
-  sudo: yes
-  roles:
-    - { role: elasticsearch, elasticsearch_node_type: data, elasticsearch_environment: 'ec2' }
-- hosts: kibana
-  sudo: yes
-  roles:
-    - { role: kibana4, kibana_elasticsearch_ip: "{{  groups.elasticsearch_master.0  }}" }
-- hosts: proxy
-  sudo: yes
-  roles:
-    - { role: nginx, nginx_config: ./roles/kibana4/templates/nginx.j2 }
-
+- include: elasticsearch_master.yml
+- include: elasticsearch_data.yml
+- include: kibana.yml
+- include: proxy.yml

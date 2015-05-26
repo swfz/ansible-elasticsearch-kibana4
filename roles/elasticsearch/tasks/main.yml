@@ -1,6 +1,16 @@
 - name: openjdk
   yum: name={{ openjdk }} state=installed
 
+- name: install python setup tools
+  yum: name=python-setuptools state=installed
+
+- name: install elasticsearch-curator
+  shell: easy_install {{ item }}
+  with_items:
+    - six==1.4
+    - pbr
+    - elasticsearch-curator
+
 - name: elasticsearch
   yum: name={{ rpm }} state=present
 
@@ -20,6 +30,22 @@
   template: src={{ elasticsearch_node_type }}.j2 dest=/etc/elasticsearch/elasticsearch.yml  owner=root mode=755
   notify: restart elasticsearch
 
+- name: set heap size
+  replace: >
+    dest=/etc/sysconfig/elasticsearch
+    regexp='#ES_HEAP_SIZE=2g'
+    replace='ES_HEAP_SIZE={{ elasticsearch_heap_size }}'
+    backup=yes
+
 - name: start elasticsearch
   service: name=elasticsearch state=running enabled=yes
 
+- name: set cron for curator
+  when: ansible_eth1.ipv4.address == groups.elasticsearch_master.0
+  cron: >
+    name="curator delete indices {{ item }}"
+    minute="{{ curator_exec_minute }}"
+    hour="{{ curator_exec_hour }}"
+    state=present
+    job="/usr/bin/curator --host {{ groups.elasticsearch_master.0 }} delete indices --prefix {{ item }} --older-than {{ curator_available_days }} --time-unit days --timestring \%Y-\%m-\%d"
+  with_items: curator_indices

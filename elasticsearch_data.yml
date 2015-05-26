@@ -1,0 +1,8 @@
+---
+- hosts: elasticsearch_data
+  sudo: yes
+  vars_files:
+  - stage_vars/{{ stage }}.yml
+  roles:
+    - { role: elasticsearch, elasticsearch_node_type: data }
+

@@ -1,11 +1,12 @@
 [elasticsearch_master]
-192.168.20.18
+192.168.20.41
 [elasticsearch_data]
 192.168.20.19
-192.168.20.20
-192.168.20.99
+192.168.20.42
 [kibana]
 192.168.20.20
 [proxy]
-192.168.20.20
+192.168.20.19
+[all:vars]
+stage=development
 

@@ -1,0 +1,6 @@
+[elasticsearch_master]
+[elasticsearch_data]
+[kibana]
+[proxy]
+[all:vars]
+stage=production

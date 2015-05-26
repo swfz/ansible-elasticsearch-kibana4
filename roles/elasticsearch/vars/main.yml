@@ -1,18 +1,12 @@
 rpm: https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.5.1.noarch.rpm
 openjdk: java-1.8.0
 configfile: /etc/elasticsearch/elasticsearch.yml
+elasticsearch_heap_size: 512m
 elasticsearch_plugins:
   head:
     repo: mobz/elasticsearch-head
-  inquisitor:
-    repo: polyfractal/elasticsearch-inquisitor
   HQ:
     repo: royrusso/elasticsearch-HQ
   bigdesk:
     repo: lukas-vlcek/bigdesk
-  cloud-aws:
-    repo: elasticsearch/elasticsearch-cloud-aws/2.5.0
-aws:
-  region: "ap-southeast-1"
-  availability_zones: "ap-southeast-1a,ap-southeast-1b"
-  security_group: "elasticsearch"
+

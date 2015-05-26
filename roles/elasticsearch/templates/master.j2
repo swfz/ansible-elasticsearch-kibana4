@@ -299,12 +299,12 @@ network.host: 192.168.0.1
 
 {% if elasticsearch_environment == 'ec2' %}
 discovery.zen.ping.multicast.enabled: false
-cloud.aws.region: {{ aws.region }}
+cloud.aws.region: {{ elasticsearch_config_aws.region }}
 discovery:
     type: ec2
     ec2:
-        groups: {{ aws.security_group }}
-        availability_zones: {{ aws.availability_zones }}
+        groups: {{ elasticsearch_config_aws.security_group }}
+        availability_zones: {{ elasticsearch_config_aws.availability_zones }}
 {% endif %}
 
 #
@@ -381,4 +381,5 @@ http.cors.allow-origin: "*"
 http.cors.allow-methods: GET,POST
 http.cors.allow-headers: true
 http.cors.allow-credentials: true
+http.max_content_length: 1g
 

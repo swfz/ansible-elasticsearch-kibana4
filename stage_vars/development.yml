@@ -1,0 +1,13 @@
+elasticsearch_environment: 'vagrant'
+elasticsearch_heap_size: 512m
+elasticsearch_plugins:
+  inquisitor:
+    repo: polyfractal/elasticsearch-inquisitor
+
+curator_available_days: 10
+curator_exec_minute: 30
+curator_exec_hour: 3
+curator_indices:
+  - forward
+  - monitor
+  - nginx_access

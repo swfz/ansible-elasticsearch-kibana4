@@ -12,10 +12,3 @@
 - name: be sure nginx is running and enabled
   service: name=nginx state=running enabled=yes
 
-- name: set access.log permission
-  file: path=/var/log/nginx/access.log mode=0755
-
-- name: set error.log permission
-  file: path=/var/log/nginx/error.log mode=0755
-
-
