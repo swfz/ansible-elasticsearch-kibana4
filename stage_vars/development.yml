@@ -4,10 +4,19 @@ elasticsearch_plugins:
   inquisitor:
     repo: polyfractal/elasticsearch-inquisitor
 
-curator_available_days: 10
-curator_exec_minute: 30
-curator_exec_hour: 3
 curator_indices:
-  - forward
-  - monitor
-  - nginx_access
+  forward:
+    state: present
+    available_days: 10
+    exec_minute: 30
+    exec_hour: 3
+  monitor:
+    state: present
+    available_days: 10
+    exec_minute: 0
+    exec_hour: 3
+  nginx_access:
+    state: present
+    available_days: 10
+    exec_minute: 0
+    exec_hour: 4

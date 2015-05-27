@@ -8,11 +8,24 @@ elasticsearch_plugins:
   cloud-aws:
     repo: elasticsearch/elasticsearch-cloud-aws/2.5.0
 
-curator_available_days: 60
-curator_exec_minute: 30
-curator_exec_hour: 3
 curator_indices:
-  - balancer
-  - backend
-  - daemon
-  - monitor
+  balancer:
+    state: present
+    available_days: 60
+    exec_minute: 40
+    exec_hour: 3
+  backend:
+    state: present
+    available_days: 60
+    exec_minute: 30
+    exec_hour: 3
+  daemon:
+    state: present
+    available_days: 60
+    exec_minute: 20
+    exec_hour: 3
+  monitor:
+    state: present
+    available_days: 60
+    exec_minute: 10
+    exec_hour: 3

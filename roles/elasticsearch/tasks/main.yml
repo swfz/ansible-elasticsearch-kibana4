@@ -43,9 +43,9 @@
 - name: set cron for curator
   when: ansible_eth1.ipv4.address == groups.elasticsearch_master.0
   cron: >
-    name="curator delete indices {{ item }}"
-    minute="{{ curator_exec_minute }}"
-    hour="{{ curator_exec_hour }}"
-    state=present
-    job="/usr/bin/curator --host {{ groups.elasticsearch_master.0 }} delete indices --prefix {{ item }} --older-than {{ curator_available_days }} --time-unit days --timestring \%Y-\%m-\%d"
-  with_items: curator_indices
+    name="curator delete indices {{ item.key }}"
+    minute="{{ item.value.exec_minute }}"
+    hour="{{ item.value.exec_hour }}"
+    state="{{ item.value.state }}"
+    job="/usr/bin/curator --host {{ groups.elasticsearch_master.0 }} delete indices --prefix {{ item.key }} --older-than {{ item.value.available_days }} --time-unit days --timestring \%Y-\%m-\%d"
+  with_dict: curator_indices
