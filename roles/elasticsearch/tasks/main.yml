@@ -51,7 +51,7 @@
   service: name=elasticsearch state=running enabled=yes
 
 - name: set cron for curator
-  when: ansible_eth1.ipv4.address == groups.elasticsearch_master.0
+  when: inventory_hostname == groups.elasticsearch_master.0
   cron: >
     name="curator delete indices {{ item.key }}"
     minute="{{ item.value.exec_minute }}"
