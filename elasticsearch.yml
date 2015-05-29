@@ -1,7 +1,8 @@
 ---
-- hosts: kibana
+- hosts: elasticsearch
   sudo: yes
   vars_files:
   - stage_vars/{{ stage }}.yml
   roles:
-    - { role: kibana4 }
+    - { role: elasticsearch }
+

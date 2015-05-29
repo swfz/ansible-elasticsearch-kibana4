@@ -1,14 +1,17 @@
-src: /usr/local/bin
-version: kibana-4.0.2-linux-x64
-tar_gz: https://download.elasticsearch.org/kibana/kibana/{{ version }}.tar.gz
-kibana_elasticsearch_ip: localhost
-kibana_supervisor_program_name: kibana4
-kibana_user: root
-supervisor_config:
-  - { program: "{{ kibana_supervisor_program_name }}", option: command, value: "{{ src }}/{{ version }}/bin/kibana"}
-  - { program: "{{ kibana_supervisor_program_name }}", option: autostart, value: true }
-  - { program: "{{ kibana_supervisor_program_name }}", option: autorestart, value: true }
-  - { program: "{{ kibana_supervisor_program_name }}", option: log_stdout, value: true }
-  - { program: "{{ kibana_supervisor_program_name }}", option: log_stderr, value: true }
-  - { program: "{{ kibana_supervisor_program_name }}", option: stopsignal, value: QUIT }
-  - { program: "{{ kibana_supervisor_program_name }}", option: logfile, value: "/var/log/supervisor/{{ kibana_supervisor_program_name }}.log" }
+kibana_version: kibana-4.0.2-linux-x64
+kibana:
+  src: /usr/local/bin
+  tar_gz: https://download.elasticsearch.org/kibana/kibana/{{ kibana_version }}.tar.gz
+  elasticsearch_ip: "{{ groups.elasticsearch_master.0 | default('localhost') }}"
+  user: root
+  supervisor_program: kibana4
+
+kibana_supervisor:
+  config:
+    - { program: "{{ kibana.supervisor_program }}", option: command, value: "{{ kibana.src }}/{{ kibana_version }}/bin/kibana"}
+    - { program: "{{ kibana.supervisor_program }}", option: autostart, value: true }
+    - { program: "{{ kibana.supervisor_program }}", option: autorestart, value: true }
+    - { program: "{{ kibana.supervisor_program }}", option: log_stdout, value: true }
+    - { program: "{{ kibana.supervisor_program }}", option: log_stderr, value: true }
+    - { program: "{{ kibana.supervisor_program }}", option: stopsignal, value: QUIT }
+    - { program: "{{ kibana.supervisor_program }}", option: logfile, value: "/var/log/supervisor/{{ kibana.supervisor_program }}.log" }

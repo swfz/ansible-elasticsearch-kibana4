@@ -1,12 +1,19 @@
 [elasticsearch_master]
-192.168.20.41
+192.168.20.41 node_master=true node_data=false
+
 [elasticsearch_data]
-192.168.20.19
-192.168.20.42
+192.168.20.19 node_master=false node_data=true
+192.168.20.42 node_master=false node_data=true
+
+[elasticsearch:children]
+elasticsearch_master
+elasticsearch_data
+
 [kibana]
 192.168.20.20
 [proxy]
 192.168.20.19
+
 [all:vars]
 stage=development
 

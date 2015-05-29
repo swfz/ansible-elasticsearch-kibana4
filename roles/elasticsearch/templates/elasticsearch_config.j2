@@ -29,7 +29,7 @@
 # Cluster name identifies your cluster for auto-discovery. If you're running
 # multiple clusters on the same network, make sure you're using unique names.
 #
-cluster.name: elasticsearch
+cluster.name: elasticsearch{{ elasticsearch.cluster_name }}
 
 
 #################################### Node #####################################
@@ -37,7 +37,7 @@ cluster.name: elasticsearch
 # Node names are generated dynamically on startup, so you're relieved
 # from configuring them manually. You can tie this node to a specific name:
 #
-node.name: "Luxon{{ inventory_hostname }}"
+node.name: "{{ elasticsearch.cluster_name }}{{ inventory_hostname }}"
 
 # Every node can be configured to allow or deny being eligible as the master,
 # and to allow or deny to store the data.
@@ -55,8 +55,8 @@ node.name: "Luxon{{ inventory_hostname }}"
 # 1. You want this node to never become a master node, only to hold data.
 #    This will be the "workhorse" of your cluster.
 #
-node.master: false
-node.data: true
+#node.master: false
+#node.data: true
 #
 # 2. You want this node to only serve as a master: to not store any data and
 #    to have free resources. This will be the "coordinator" of your cluster.
@@ -70,6 +70,9 @@ node.data: true
 #
 #node.master: false
 #node.data: false
+
+node.master: {{ node.master }}
+node.data: {{ node.data }}
 
 # Use the Cluster Health API [http://localhost:9200/_cluster/health], the
 # Node Info API [http://localhost:9200/_nodes] or GUI tools
@@ -200,15 +203,15 @@ node.data: true
 # Set the bind address specifically (IPv4 or IPv6):
 #
 #network.bind_host: 192.168.0.1
-{% if elasticsearch_environment == 'vagrant' %}
+{% if elasticsearch.composition == 'cluster' %}
+{% if elasticsearch.environment == 'vagrant' %}
 network.host: _eth1:ipv4_
-{% elif elasticsearch_environment == 'ec2' %}
+{% elif elasticsearch.environment == 'ec2' %}
 network.host: _ec2:privateIpv4_
 {% else %}
 network.host: 192.168.0.1
 {% endif %}
-
-
+{% endif %}
 
 ################################### Gateway ###################################
 # The gateway allows for persisting the cluster state between full cluster
@@ -297,14 +300,16 @@ network.host: 192.168.0.1
 #
 #discovery.zen.ping.multicast.enabled: false
 
-{% if elasticsearch_environment == 'ec2' %}
+{% if elasticsearch.composition == 'cluster' %}
+{% if elasticsearch.environment == 'ec2' %}
 discovery.zen.ping.multicast.enabled: false
-cloud.aws.region: {{ elasticsearch_config_aws.region }}
+cloud.aws.region: {{ elasticsearch.config_aws.region }}
 discovery:
     type: ec2
     ec2:
-        groups: {{ elasticsearch_config_aws.security_group }}
-        availability_zones: {{ elasticsearch_config_aws.availability_zones }}
+        groups: {{ elasticsearch.config_aws.security_group }}
+        availability_zones: {{ elasticsearch.config_aws.availability_zones }}
+{% endif %}
 {% endif %}
 
 #
@@ -313,9 +318,11 @@ discovery:
 #
 #discovery.zen.ping.unicast.hosts: ["host1", "host2:port"]
 
-{% if elasticsearch_environment == 'ec2' %}
-{% set string = groups.elasticsearch_data|join(",") %}
-discovery.zen.ping.unicast.hosts: [{{ string }},{{groups.elasticsearchjmaster.0}}]
+{% if elasticsearch.composition == 'cluster' %}
+{% if elasticsearch.environment == 'ec2' %}
+{% set nodes = groups.elasticsearch|join(",") %}
+discovery.zen.ping.unicast.hosts: [{{ nodes }}]
+{% endif %}
 {% endif %}
 
 # EC2 discovery allows to use AWS EC2 API in order to perform discovery.

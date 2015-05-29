@@ -1,24 +1,28 @@
 - name: check exist binfile
-  stat: path={{ src }}/{{ version }}/bin/kibana
+  stat: path={{ kibana.src }}/{{ kibana_version }}/bin/kibana
   register: binfile
 
 - name: get tar.gz
   when: binfile.stat.md5 is not defined
-  get_url: url={{ tar_gz }} dest={{ src }}
+  get_url: url={{ kibana.tar_gz }} dest={{ kibana.src }}
 
 - name: decompress tar.gz
   when: binfile.stat.md5 is not defined
-  command: tar xvzf {{ version }}.tar.gz --remove-files  chdir={{ src }}
+  command: tar xvzf {{ kibana_version }}.tar.gz --remove-files  chdir={{ kibana.src }}
 
 - name: set kibana config
-  replace: dest={{ src }}/{{ version }}/config/kibana.yml regexp='http://.*:9200' replace="http://{{ kibana_elasticsearch_ip }}:9200" backup=yes
+  replace: dest={{ kibana.src }}/{{ kibana_version }}/config/kibana.yml regexp='http://.*:9200' replace="http://{{ kibana.elasticsearch_ip }}:9200" backup=yes
   notify: reload supervisor
+  tags:
+    - config
 
 - name: set supervisor config
   ini_file: dest=/etc/supervisord.conf
             section=program:{{ item.program }}
             option={{ item.option }}
             value={{ item.value }}
-  with_items: supervisor_config
+  with_items: kibana_supervisor.config
   notify: reload supervisor
+  tags:
+    - config
 

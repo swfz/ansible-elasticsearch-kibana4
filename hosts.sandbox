@@ -1,4 +1,6 @@
 [elasticsearch_master]
+192.168.20.54 node_master=true node_data=true
+
 [elasticsearch_data]
 
 [elasticsearch:children]
@@ -6,6 +8,9 @@ elasticsearch_master
 elasticsearch_data
 
 [kibana]
+192.168.20.53
 [proxy]
+
 [all:vars]
-stage=production
+stage=sandbox
+

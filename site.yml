@@ -1,4 +1,3 @@
-- include: elasticsearch_master.yml
-- include: elasticsearch_data.yml
+- include: elasticsearch.yml
 - include: kibana.yml
 - include: proxy.yml

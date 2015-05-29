@@ -1,12 +1,17 @@
-rpm: https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.5.1.noarch.rpm
-openjdk: java-1.8.0
-configfile: /etc/elasticsearch/elasticsearch.yml
-elasticsearch_heap_size: 512m
-elasticsearch_plugins:
-  head:
-    repo: mobz/elasticsearch-head
-  HQ:
-    repo: royrusso/elasticsearch-HQ
-  bigdesk:
-    repo: lukas-vlcek/bigdesk
+elasticsearch:
+  composition: alone
+  rpm: https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.5.1.noarch.rpm
+  openjdk: java-1.8.0
+  configfile: /etc/elasticsearch/elasticsearch.yml
+  heap_size: 512m
+  plugins:
+    head:
+      repo: mobz/elasticsearch-head
+    HQ:
+      repo: royrusso/elasticsearch-HQ
+    bigdesk:
+      repo: lukas-vlcek/bigdesk
+node:
+  master: "{{ node_master | default('true') }}"
+  data: "{{ node_data | default('true') }}"
 

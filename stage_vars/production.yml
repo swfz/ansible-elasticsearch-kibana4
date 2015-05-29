@@ -1,31 +1,35 @@
-elasticsearch_environment: 'ec2'
-elasticsearch_heap_size: 8g
-elasticsearch_config_aws:
-  region: "ap-southeast-1"
-  availability_zones: "ap-southeast-1a,ap-southeast-1b"
-  security_group: "elasticsearch"
-elasticsearch_plugins:
-  cloud-aws:
-    repo: elasticsearch/elasticsearch-cloud-aws/2.5.0
+elasticsearch:
+  composition: cluster
+  cluster_name: Production
+  environment: 'ec2'
+  heap_size: 8g
+  config_aws:
+    region: "ap-southeast-1"
+    availability_zones: "ap-southeast-1a,ap-southeast-1b"
+    security_group: "elasticsearch"
+  plugins:
+    cloud-aws:
+      repo: elasticsearch/elasticsearch-cloud-aws/2.5.0
 
-curator_indices:
-  balancer:
-    state: present
-    available_days: 60
-    exec_minute: 40
-    exec_hour: 3
-  backend:
-    state: present
-    available_days: 60
-    exec_minute: 30
-    exec_hour: 3
-  daemon:
-    state: present
-    available_days: 60
-    exec_minute: 20
-    exec_hour: 3
-  monitor:
-    state: present
-    available_days: 60
-    exec_minute: 10
-    exec_hour: 3
+curator:
+  indices:
+    balancer:
+      state: present
+      available_days: 60
+      exec_minute: 40
+      exec_hour: 3
+    backend:
+      state: present
+      available_days: 60
+      exec_minute: 30
+      exec_hour: 3
+    daemon:
+      state: present
+      available_days: 60
+      exec_minute: 20
+      exec_hour: 3
+    monitor:
+      state: present
+      available_days: 60
+      exec_minute: 10
+      exec_hour: 3
