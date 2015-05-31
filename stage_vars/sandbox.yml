@@ -24,3 +24,7 @@ curator:
       available_days: 10
       exec_minute: 0
       exec_hour: 4
+
+nginx:
+  config:
+    file: ./roles/kibana4/templates/nginx.j2

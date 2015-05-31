@@ -6,8 +6,8 @@
   yum: name=nginx state=installed
 
 - name: set config
-  when: nginx_config is defined
-  template: src={{ nginx_config }} dest=/etc/nginx/nginx.conf owner=root mode=644
+  when: nginx.config.file is defined
+  template: src={{ nginx.config.file }} dest=/etc/nginx/nginx.conf owner=root mode=644
 
 - name: be sure nginx is running and enabled
   service: name=nginx state=running enabled=yes

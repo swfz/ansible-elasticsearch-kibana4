@@ -4,5 +4,5 @@
   vars_files:
   - stage_vars/{{ stage }}.yml
   roles:
-    - { role: nginx, nginx_config: ./roles/kibana4/templates/nginx.j2 }
+    - { role: nginx }
 
