@@ -50,14 +50,22 @@
 - name: start elasticsearch
   service: name=elasticsearch state=running enabled=yes
 
+- name: get curator path
+  when: inventory_hostname == groups.elasticsearch_master.0
+  shell: PATH=/usr/local/bin:$PATH /bin/bash -lc "which curator"
+  register: curator_path
+  changed_when: false
+  tags:
+    - cron
+
 - name: set cron for curator
   when: inventory_hostname == groups.elasticsearch_master.0
   cron: >
-    name="curator delete indices {{ item.key }}"
+    name="curator {{ item.key }} indices"
     minute="{{ item.value.exec_minute }}"
     hour="{{ item.value.exec_hour }}"
     state="{{ item.value.state }}"
-    job="/usr/bin/curator --host {{ groups.elasticsearch_master.0 }} delete indices --prefix {{ item.key }} --older-than {{ item.value.available_days }} --time-unit days --timestring \%Y-\%m-\%d"
+    job="{{ curator_path.stdout }} --host {{ groups.elasticsearch_master.0 }} {{ item.value.command }} indices --prefix {{ item.value.prefix }} --older-than {{ item.value.available_days }} --time-unit days --timestring \%Y-\%m-\%d"
   with_dict: curator.indices
   tags:
-    - config
+    - cron
