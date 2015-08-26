@@ -10,16 +10,19 @@ elasticsearch:
 curator:
   indices:
     forward:
+      command: delete
       state: present
       available_days: 10
       exec_minute: 30
       exec_hour: 3
     monitor:
+      command: delete
       state: present
       available_days: 10
       exec_minute: 0
       exec_hour: 3
     nginx_access:
+      command: delete
       state: present
       available_days: 10
       exec_minute: 0

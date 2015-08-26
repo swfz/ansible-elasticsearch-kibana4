@@ -65,7 +65,7 @@
     minute="{{ item.value.exec_minute }}"
     hour="{{ item.value.exec_hour }}"
     state="{{ item.value.state }}"
-    job="{{ curator_path.stdout }} --host {{ groups.elasticsearch_master.0 }} {{ item.value.command }} indices --prefix {{ item.value.prefix }} --older-than {{ item.value.available_days }} --time-unit days --timestring \%Y-\%m-\%d"
+    job="{{ curator_path.stdout }} --host {{ groups.elasticsearch_master.0 }} {{ item.value.command }} indices --prefix {{ item.key }} --older-than {{ item.value.available_days }} --time-unit days --timestring \%Y-\%m-\%d"
   with_dict: curator.indices
   tags:
     - cron
