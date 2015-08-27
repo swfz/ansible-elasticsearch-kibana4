@@ -17,7 +17,7 @@ elasticsearch:
 
 # インストール
 
-* configのみ変更の場合は`--tags "config"`を追加する
+* configのみ変更の場合は`--tags "cron|config"`を追加する
 
 ```
 ansible-playbook -i hosts.{stage} site.yml [--tags "config"]
