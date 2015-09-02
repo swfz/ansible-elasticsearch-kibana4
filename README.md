@@ -1,25 +1,111 @@
-# ansible-elasticsearch-kibana4
+Elasticsaerch Kibana
+=========
 
-* クラスタ構成、ec2までカバー
+install and run elasticsaerch and kibana for ec2 or vagrant
 
-## 設定
-### クラスタ構成か一台構成か分ける
+set crontab for elasticsaerch-curator
 
-* stage_vars/{stage}.yml
+Requirements
+------------
+
+Variables
+--------------
+
+### stage_vars/{stage}.yml
+
+#### environment
+
+* ec2 or vagrant
+
+#### plugins
+
 ```
-elasticsearch:
-  composition: [cluster|alone]
+plugins:
+  { plugin_name }:
+    repo: { repository path }
 ```
 
-### 他環境に合わせて変更
-* stage_vars/{stage}.yml
-* hosts.{stage}
+* default installed plugin
+    * mobz/elasticsearch-head
+    * royrusso/elasticsearch-HQ
+    * lukas-vlcek/bigdesk
 
-# インストール
+#### curator
 
-* configのみ変更の場合は`--tags "cron|config"`を追加する
+* Set curator job
 
 ```
-ansible-playbook -i hosts.{stage} site.yml [--tags "config"]
+curator:
+  indices:
+    {index name prefix}:
+      command: {curator subcommand}
+      state: {present or absent}
+      available_days: { days }
+      exec_minute: { minute }
+      exec_hour: { hour }
 ```
+
+* e.g.)
+
+```
+curator:
+  indices:
+    nginx_access:
+      command: delete
+      state: present
+      available_days: 5
+      exec_minute: 0
+      exec_hour: 4
+```
+
+* crontab
+
+```
+#Ansible: curator nginx_access indices
+0 4 * * * /usr/bin/curator --host 192.168.20.20 delete indices --prefix nginx_access --older-than 5 --time-unit days --timestring \%Y-\%m-\%d
+```
+
+### hosts.{stage}.yml
+
+* elasticsaerch_master
+    * set master node
+
+* e.g.)
+
+```
+node_master=true node_data=false
+```
+
+run as master and data node.
+
+```
+node_master=true node_data=true
+```
+
+* elasticsaerch_data
+    * Set data node
+
+Run
+------------
+
+```
+ansible-playbook -i hosts.{stage} site.yml
+```
+
+### Tags
+
+When variables setting includes a change, I attach a tag
+
+* config
+    * elasticsaerch
+    * nginx
+* cron
+    * cron
+
+Dependencies
+------------
+
+* nginx
+* supervisord
+* epel
 
