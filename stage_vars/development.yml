@@ -6,6 +6,8 @@ elasticsearch:
   plugins:
     inquisitor:
       repo: polyfractal/elasticsearch-inquisitor
+    gui:
+      repo: jettro/elasticsearch-gui
 
 curator:
   indices:
